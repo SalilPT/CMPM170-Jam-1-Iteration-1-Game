@@ -50,6 +50,7 @@ let barLength;
 let projectilesArray;
 let inBombPhase;
 let currBombRadius;
+let ticksUntilNextHelper;
 
 function updatePlayerBar() {
   // Make center hitbox
@@ -170,15 +171,17 @@ function update() {
     projectilesArray = [];
     inBombPhase = false;
     currBombRadius = 0;
+    ticksUntilNextHelper = 360;
   }
 
   updatePlayerBar();
 
-  // Simple logic for spawning projectiles
-  // TODO?: Make this better and add more randomness
-  if (ticks % 480 == 0) {
+  // Logic for spawning projectiles
+  if (ticksUntilNextHelper == 0) {
     spawnProj("helper");
+    ticksUntilNextHelper = rndi(480, 601); // Random time from 8 to 10 seconds
   }
+  ticksUntilNextHelper--;
   if ((ticks + rndi(6)) % 15 == 0) {
     spawnProj("enemy");
   }
