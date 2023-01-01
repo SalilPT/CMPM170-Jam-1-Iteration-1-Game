@@ -105,16 +105,15 @@ function updateAllProjectiles() {
   }
 
   // Not currently in a bomb phase
+  let gameEnd = false;
   for (proj of projectilesArray) {
-    // TODO?: Refactor so that the 2 lines of code to update the positions of projectiles isn't repeated here
     proj.xPos = proj.xPos + proj.xVel;
     let projCollision = char(proj.projType == "enemy" ? "a": "b", proj.xPos, SCREEN_HEIGHT/2);
 
     // Projectile collided with the center of the player bar
     if (projCollision.isColliding.rect.black) {
       if (proj.projType == "enemy") {
-        end("GAME OVER");
-        return;
+        gameEnd = true;
       }
       if (proj.projType == "helper") {
         // Reset bar length
@@ -135,6 +134,13 @@ function updateAllProjectiles() {
       addScore(proj.projType == "enemy" ? difficulty : 0, proj.xPos, SCREEN_HEIGHT/2);
       play("select");
     }
+  }
+
+  // If an enemy projectile collided with the center of the player bar, end the game
+  if (gameEnd) {
+    play("lucky", {note: "E1"})
+    end("GAME OVER");
+    return;
   }
 
   cleanUpProjectiles();
